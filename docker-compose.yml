@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:16
+    container_name: sales_db
+    environment:
+      POSTGRES_DB: test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: sales_app
+    depends_on:
+      - db
+    environment:
+      DB_URL: postgresql+psycopg2://postgres:1234@db:5432/test
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+
+volumes:
+  pg_data:
